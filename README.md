@@ -19,32 +19,7 @@ MongoDB
 Mongoose
 Postman
 Git & GitHub
-📁 Project Structure
-taskflow-api/
-│
-├── src/
-│   ├── controllers/
-│   │   └── task.controller.js
-│   │
-│   ├── routes/
-│   │   └── task.routes.js
-│   │
-│   ├── models/
-│   │   └── task.model.js
-│   │
-│   ├── config/
-│   │   └── db.js
-│   │
-│   ├── middleware/
-│   │   └── error.middleware.js
-│   │
-│   ├── app.js
-│   └── server.js
-│
-├── .env
-├── .gitignore
-├── package.json
-└── README.md
+
 🎯 Current Goals
 
 The initial version will provide basic task management functionality:
