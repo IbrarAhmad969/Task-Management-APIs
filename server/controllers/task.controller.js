@@ -46,7 +46,7 @@ const getTasks = async (req, res) => {
 
         const tasks = await Task.find();
         return res.status(200).json({
-            tasks, 
+            tasks,
             message: "All Tasks "
         })
 
@@ -59,5 +59,28 @@ const getTasks = async (req, res) => {
         })
     }
 }
+const findTask = async (req, res) => {
+    const id = req.params.id
 
-module.exports = { createTask, getTasks}
+    try {
+        const doc_id = await Task.findById(id);
+        if (doc_id == null) {
+            return res.status(404).json({
+                message: "This id is not found!"
+            })
+        }
+        return res.status(200).json({
+            message: "This ID is found! ",
+            doc_id
+        })
+
+    } catch (error) {
+        console.log("We have found an error ", error)
+        return res.status(400).json({
+            message: "We did not found that Id"
+        })
+    }
+}
+
+
+module.exports = { createTask, getTasks, findTask }
