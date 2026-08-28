@@ -64,7 +64,7 @@ const findTask = async (req, res) => {
 
     try {
         const doc_id = await Task.findById(id);
-        if (doc_id == null) {
+        if (doc_id === null) {
             return res.status(404).json({
                 message: "This id is not found!"
             })
@@ -114,6 +114,30 @@ const updateTask = async (req, res) => {
         });
     }
 };
+const deleteTask = async (req, res) => {
+    const { id } = req.params;
 
+    try {
+        const deletedTask = await Task.findByIdAndDelete(id);
 
-module.exports = { createTask, getTasks, findTask, updateTask }
+        if (deletedTask === null) {
+            return res.status(404).json({
+                message: "Task not found"
+            });
+        }
+
+        return res.status(200).json({
+            message: "Task deleted successfully",
+            task: deletedTask
+        });
+
+    } catch (error) {
+        console.error("Error deleting task:", error);
+
+        return res.status(500).json({
+            message: "Unable to delete task"
+        });
+    }
+};
+
+module.exports = { createTask, getTasks, findTask, updateTask, deleteTask }
