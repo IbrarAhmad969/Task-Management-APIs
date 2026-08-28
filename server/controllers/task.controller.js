@@ -41,5 +41,23 @@ const createTask = async (req, res) => {
         process.exit(-1);
     }
 }
+const getTasks = async (req, res) => {
+    try {
 
-module.exports = { createTask }
+        const tasks = await Task.find();
+        return res.status(200).json({
+            tasks, 
+            message: "All Tasks "
+        })
+
+
+    } catch (error) {
+        console.log("Failed to load Tasks ", error)
+        res.status(400).json({
+            message: "Unable to get the Tasks"
+
+        })
+    }
+}
+
+module.exports = { createTask, getTasks}
