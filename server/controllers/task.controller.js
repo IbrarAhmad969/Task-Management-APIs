@@ -35,10 +35,10 @@ const createTask = async (req, res) => {
 
     } catch (error) {
         console.log("Error found while creating new Task - ", error)
-        res.status(500).json({
-            message: "Error found while creating new Task! "
+        res.status(400).json({
+            message: "Bad Request ",
+            error: error.message
         })
-        process.exit(-1);
     }
 }
 const getTasks = async (req, res) => {
@@ -53,7 +53,7 @@ const getTasks = async (req, res) => {
 
     } catch (error) {
         console.log("Failed to load Tasks ", error)
-        res.status(400).json({
+        res.status(500).json({
             message: "Unable to get the Tasks"
 
         })
@@ -63,15 +63,15 @@ const findTask = async (req, res) => {
     const id = req.params.id
 
     try {
-        const doc_id = await Task.findById(id);
-        if (doc_id === null) {
+        const task = await Task.findById(id);
+        if (task === null) {
             return res.status(404).json({
                 message: "This id is not found!"
             })
         }
         return res.status(200).json({
             message: "This ID is found! ",
-            doc_id
+            task
         })
 
     } catch (error) {
