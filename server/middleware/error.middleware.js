@@ -1,9 +1,7 @@
 const errorHandler = (err, req, res, next) => {
-    // console.log(err.name);
-
     if (err.name === "ValidationError") {
         const errors = {}
-        for (const field of Object.keys(err.errors)) {
+        for (const field of Object.keys(err.errors)) { // This is used if we send multiple data wrongly/unexpectedly, we get the keys, coz object is returned by Mongoose.
             errors[field] = err.errors[field].message;
         }
         return res.status(400).json({

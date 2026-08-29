@@ -37,7 +37,7 @@ const createTask = async (req, res, next) => {
         next(error)
     }
 }
-const getTasks = async (req, res) => {
+const getTasks = async (req, res, next) => {
     try {
 
         const tasks = await Task.find();
@@ -48,14 +48,10 @@ const getTasks = async (req, res) => {
 
 
     } catch (error) {
-        console.log("Failed to load Tasks ", error)
-        res.status(500).json({
-            message: "Unable to get the Tasks"
-
-        })
+        next(error)
     }
 }
-const findTask = async (req, res) => {
+const findTask = async (req, res, next) => {
     const id = req.params.id
 
     try {
@@ -71,13 +67,10 @@ const findTask = async (req, res) => {
         })
 
     } catch (error) {
-        console.log("We have found an error ", error)
-        return res.status(400).json({
-            message: "We did not found that Id"
-        })
+        next(error)
     }
 }
-const updateTask = async (req, res) => {
+const updateTask = async (req, res, next) => {
     const { id } = req.params;
 
     try {
@@ -102,15 +95,10 @@ const updateTask = async (req, res) => {
         });
 
     } catch (error) {
-        console.error("Error updating task:", error);
-
-        return res.status(400).json({
-            message: "Unable to update task",
-            error: error.message
-        });
+        next(error)
     }
 };
-const deleteTask = async (req, res) => {
+const deleteTask = async (req, res, next) => {
     const { id } = req.params;
 
     try {
@@ -128,11 +116,7 @@ const deleteTask = async (req, res) => {
         });
 
     } catch (error) {
-        console.error("Error deleting task:", error);
-
-        return res.status(500).json({
-            message: "Unable to delete task"
-        });
+        next(error)
     }
 };
 
