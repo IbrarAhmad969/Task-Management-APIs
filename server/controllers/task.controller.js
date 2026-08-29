@@ -1,6 +1,6 @@
 const Task = require("../models/tasks.model")
 
-const createTask = async (req, res) => {
+const createTask = async (req, res, next) => {
 
     try {
         const {
@@ -34,11 +34,7 @@ const createTask = async (req, res) => {
 
 
     } catch (error) {
-        console.log("Error found while creating new Task - ", error)
-        res.status(400).json({
-            message: "Bad Request ",
-            error: error.message
-        })
+        next(error)
     }
 }
 const getTasks = async (req, res) => {
