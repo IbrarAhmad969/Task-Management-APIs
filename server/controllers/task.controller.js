@@ -16,6 +16,7 @@ const createTask = async (req, res, next) => {
                 message: "Title and description are mandatory"
             })
         }
+        const user = req.user
 
         const task = await Task.create(
             {
@@ -23,7 +24,8 @@ const createTask = async (req, res, next) => {
                 description,
                 status,
                 priority,
-                dueDate
+                dueDate,
+                user,
             }
         )
 
@@ -40,7 +42,9 @@ const createTask = async (req, res, next) => {
 const getTasks = async (req, res, next) => {
     try {
 
-        const tasks = await Task.find();
+        const tasks = await Task.find({  // just get the tasks for logged in user! 
+            user: req.user
+        });
         return res.status(200).json({
             tasks,
             message: "All Tasks "
@@ -55,7 +59,10 @@ const findTask = async (req, res, next) => {
     const id = req.params.id
 
     try {
-        const task = await Task.findById(id);
+        const task = await Task.findOne({
+            _id: id,
+            user: req.user
+        });
         if (task === null) {
             return res.status(404).json({
                 message: "This id is not found!"
@@ -75,7 +82,10 @@ const updateTask = async (req, res, next) => {
 
     try {
         const task = await Task.findByIdAndUpdate(
-            id,
+            {
+                _id: id,
+                user: req.user
+            },
             req.body,
             {
                 new: true, // send us back the new version/updated, not the older one. 
@@ -102,7 +112,10 @@ const deleteTask = async (req, res, next) => {
     const { id } = req.params;
 
     try {
-        const deletedTask = await Task.findByIdAndDelete(id);
+        const deletedTask = await Task.findByIdAndDelete({
+            _id: id,
+            user: req.user
+        });
 
         if (deletedTask === null) {
             return res.status(404).json({

@@ -5,10 +5,10 @@ const { createTask, getTasks, findTask, updateTask, deleteTask } = require("../c
 
 
 router.post("/createTask", authMiddleware, createTask);
-router.get("/allTasks", getTasks);
-router.get("/:id", findTask);
-router.patch("/:id", updateTask)
-router.delete("/:id", deleteTask)
+router.get("/allTasks", authMiddleware, getTasks);
+router.get("/:id", authMiddleware, findTask);
+router.patch("/:id", authMiddleware, updateTask)
+router.delete("/:id", authMiddleware, deleteTask)
 
 
 module.exports = router;

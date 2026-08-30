@@ -7,7 +7,7 @@ const authMiddleware = async (req, res, next) => {
         const authHeader = req.headers.authorization
 
         if (!authHeader) {
-            return res.status(404).json({
+            return res.status(401).json({
                 message: "Authorization token is required "
             })
         }
