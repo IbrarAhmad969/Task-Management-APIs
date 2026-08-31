@@ -10,12 +10,7 @@ const createTask = async (req, res, next) => {
             priority,
             dueDate
         } = req.body
-
-        if (!title || !description) {
-            return res.status(400).json({
-                message: "Title and description are mandatory"
-            })
-        }
+        
         const user = req.user
 
         const task = await Task.create(
