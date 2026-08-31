@@ -10,7 +10,7 @@ const createTask = async (req, res, next) => {
             priority,
             dueDate
         } = req.body
-        
+
         const user = req.user
 
         const task = await Task.create(
@@ -36,10 +36,42 @@ const createTask = async (req, res, next) => {
 }
 const getTasks = async (req, res, next) => {
     try {
+        const { status, priority, search } = req.query
 
-        const tasks = await Task.find({  // just get the tasks for logged in user! 
+        const filter = {
             user: req.user
-        });
+        }
+
+        if (status) {
+            filter.status = status
+        }
+        if (priority) {
+            filter.priority = priority
+        }
+
+        if (search) {
+            filter.$or = [
+                {
+                    title: {
+                        $regex: search,
+                        $options: "i"
+                    }
+                },
+                {
+                    description: {
+                        $regex: search,
+                        $options: "i"
+                    }
+                }
+            ]
+        }
+
+        const tasks = await Task.find(  // just get the tasks for logged in user!
+            filter
+
+        );
+
+
         return res.status(200).json({
             tasks,
             message: "All Tasks "
