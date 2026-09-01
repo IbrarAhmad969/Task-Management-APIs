@@ -1,103 +1,55 @@
-askFlow API
+# 📝 Task Management REST API
 
-A RESTful task management API built with Node.js, Express, and MongoDB.
+A backend REST API built with **Node.js, Express.js, MongoDB, and Mongoose**, developed as a hands-on project to learn real-world backend development.
 
-This project is being developed as a real-world backend project to improve my skills in building, structuring, testing, and deploying REST APIs.
+## 🚀 Features
 
-The project will gradually evolve from a simple CRUD API into a more complete task management backend.
+* 👤 User registration & login
+* 🔐 JWT authentication & authorization
+* 🔒 Password hashing with bcrypt
+* ✅ Request validation with Joi
+* 📋 Task CRUD operations
+* 👥 User-owned resources
+* 🔎 Filtering & text searching
+* ↕️ Sorting & pagination
+* ⚠️ Centralized error handling
+* 🛡️ API security & input validation
+* 🗄️ MongoDB & Mongoose querying
+* ⚡ Database indexing & optimization
+* 🧪 API testing with Postman
+* 🏗️ Modular & scalable backend architecture
+* 🚀 Production-ready backend practices
 
-🚧 Project Status
+## 🛠️ Tech Stack
 
-In development
+**Backend:** Node.js, Express.js
+**Database:** MongoDB, Mongoose
+**Authentication:** JWT, bcrypt
+**Validation:** Joi
+**Testing:** Postman
 
-Features and architecture will be added incrementally as the project progresses.
+## 📂 Architecture
 
-🛠️ Tech Stack
-Node.js
-Express.js
-MongoDB
-Mongoose
-Postman
-Git & GitHub
+```text
+Routes → Middleware → Controllers → Mongoose → MongoDB
+```
 
-🎯 Current Goals
+The project follows a modular structure separating routes, controllers, middleware, models, and validations.
 
-The initial version will provide basic task management functionality:
+## 🔍 Example
 
-Create a task
-Get all tasks
-Get a single task
-Update a task
-Delete a task
-🔮 Planned Features
+```http
+GET /allTasks?status=pending&priority=high&search=node&sort=-dueDate&page=1&limit=10
+```
 
-The project will be extended gradually with:
+Supports combining **authentication, filtering, searching, sorting, and pagination** in a single request.
 
-Task validation
-Error handling
-Filtering
-Sorting
-Pagination
-User accounts
-Authentication
-Authorisation
-Role-based access
-Testing
-API documentation
-Deployment
-Performance improvements
-Security improvements
+## 🎯 Goal
 
-⚙️ Installation
+The goal of this project is to understand how to **design, build, secure, test, and optimize a real-world REST API** rather than simply creating basic CRUD operations.
 
-Clone the repository:
+> **Build it. Understand it. Break it. Fix it. Improve it. 🚀**
 
-git clone <your-repository-url>
+## 📌 Status
 
-Navigate into the project:
-
-cd taskflow-api
-
-Install dependencies:
-
-npm install
-
-Create a .env file:
-
-PORT=8000
-MONGO_URI=your_mongodb_connection_string
-
-Start the development server:
-
-npm run dev
-🧪 Testing
-
-API endpoints are tested using Postman.
-
-Example:
-
-GET http://localhost:8000/api/tasks
-
-More API examples and documentation will be added as the project develops.
-
-📚 What I'm Learning
-
-This project is part of my backend development learning journey.
-
-The main focus is on understanding:
-
-REST API design
-Express.js
-MongoDB
-Mongoose
-Backend project structure
-Database modelling
-Error handling
-Authentication and authorisation
-API testing
-Production-ready backend practices
-🚀 Future Improvements
-
-This project is intentionally being built incrementally.
-
-Rather than building everything at once, new features will be introduced as I learn and understand the underlying concepts.
+🚧 **In Development** — continuously expanding toward a production-ready backend.
