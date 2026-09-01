@@ -36,7 +36,7 @@ const createTask = async (req, res, next) => {
 }
 const getTasks = async (req, res, next) => {
     try {
-        const { status, priority, search } = req.query
+        const { status, priority, search, sort } = req.query
 
         const filter = {
             user: req.user
@@ -66,10 +66,24 @@ const getTasks = async (req, res, next) => {
             ]
         }
 
+        //applying sorting ( ascending and descending orders ( 1, -1))
+
+        const sortOption = {};
+
+        // sort = ?sort=-dueDate. // we have sortOption{ dueDate = 1 or -1}
+
+        if (sort) {
+            if (sort.startsWith("-")) {
+                sortOption[sort.substring(1)] = -1;
+            } else {
+                sortOption[sort] = 1;
+            }
+        }
+
         const tasks = await Task.find(  // just get the tasks for logged in user!
             filter
 
-        );
+        ).sort(sortOption);
 
 
         return res.status(200).json({
