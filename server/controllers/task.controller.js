@@ -36,7 +36,8 @@ const createTask = async (req, res, next) => {
 }
 const getTasks = async (req, res, next) => {
     try {
-        const { status, priority, search, sort } = req.query
+        const { status, priority, search, sort, page, limit } = req.query;
+
 
         const filter = {
             user: req.user
@@ -83,7 +84,7 @@ const getTasks = async (req, res, next) => {
         const tasks = await Task.find(  // just get the tasks for logged in user!
             filter
 
-        ).sort(sortOption);
+        ).sort(sortOption).skip((page - 1) * limit).limit(limit);
 
 
         return res.status(200).json({
@@ -93,6 +94,7 @@ const getTasks = async (req, res, next) => {
 
 
     } catch (error) {
+        console.log(error.message)
         next(error)
     }
 }
