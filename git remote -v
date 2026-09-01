@@ -1,0 +1,12 @@
+* [33ma340337[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m)[m .
+*   [33m5fdf364[m Merge branch 'main' of https://github.com/IbrarAhmad969/Task-Management-APIs
+[32m|[m[33m\[m  
+[32m|[m * [33mdf64914[m Revise README for Task Management API
+* [33m|[m [33mca11e28[m Add basic Pagination, with page and Limit, implement them to our filter, and retrieve the data. apply skip and limit methods only.
+[33m|[m[33m/[m  
+* [33m578282c[m Apply Sorting to Client request, update the task controller with business logic to accommodate sort, search, and invalid status and priority values.
+* [33m44dbd61[m QueryValidation Update: I update the existing code to a generic one to encounter query errors, if client send data that don't exist in our Mongoose.
+* [33m10e2bcb[m Enhance task retrieval: add filtering by status, priority, and search terms in getTasks function; clean up createTask function.
+* [33ma786a19[m Refactor validation middleware: consolidate task and user validation into requestsValidation middleware, removing redundant files and updating routes accordingly.
+* [33m3e623d7[m Add validator to Schema, and update the routes accordingly
+* [33m5e6786d[m Add task validation middleware and JOI schemas for create and update tasks, add joi request validation before making a request, also update existed code to a newly updated version with JOI validation.
