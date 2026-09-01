@@ -1,6 +1,7 @@
-const validate = (schema) => (req, res, next) => {
+const validate = (schema, property) => (req, res, next) => { // pass property to validate either req.body or req.query.. we pass, "body" , "query"
 
-    const { error, value } = schema.validate(req.body);
+
+    const { error, value } = schema.validate(req[property]);
 
     if (error) {
         return res.status(400).json({
@@ -9,7 +10,7 @@ const validate = (schema) => (req, res, next) => {
         });
     }
 
-    req.body = value;
+    req[property] = value;
 
     next();
 };
