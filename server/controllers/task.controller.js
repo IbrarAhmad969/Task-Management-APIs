@@ -81,23 +81,22 @@ const getTasks = async (req, res, next) => {
                 sortOption[sort] = 1;
             }
         }
-        const totalTasks = await Task.countDocuments(filter); // this code actually gives us no of total tasks present
 
+        const [totalTasks, tasks] = await Promise.all([ // Promise.all is use to run both queries independently. 
+            Task.countDocuments(filter),
+            Task.find(
+                filter
 
-        const tasks = await Task.find(  // just get the tasks for logged in user!
-            filter
+            ).sort(sortOption).skip((page - 1) * limit).limit(limit)
+        ])
 
-        ).sort(sortOption).skip((page - 1) * limit).limit(limit);
-
-        const totalPages = Math.ceil(totalTasks / limit) // suppose total tasks=27 and limit = 10, we have to encounter remaining 7. 
-
-
+        const totalPages = Math.ceil(totalTasks / limit)
 
         return res.status(200).json({
             message: "All Tasks ",
             tasks,
             pagination: {
-                currentPage:page,
+                currentPage: page,
                 limit,
                 totalTasks,
                 totalPages
