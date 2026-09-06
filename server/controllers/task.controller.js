@@ -38,8 +38,6 @@ const getTasks = async (req, res, next) => {
     try {
         const { status, priority, search, sort, page, limit } = req.query;
 
-
-
         const filter = {
             user: req.user
         }
@@ -135,7 +133,7 @@ const updateTask = async (req, res, next) => {
     const { id } = req.params;
 
     try {
-        const task = await Task.findByIdAndUpdate(
+        const task = await Task.findOneAndUpdate(
             {
                 _id: id,
                 user: req.user
@@ -166,7 +164,7 @@ const deleteTask = async (req, res, next) => {
     const { id } = req.params;
 
     try {
-        const deletedTask = await Task.findByIdAndDelete({
+        const deletedTask = await Task.findOneAndDelete({
             _id: id,
             user: req.user
         });
