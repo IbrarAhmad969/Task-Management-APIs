@@ -161,7 +161,7 @@ const updateTask = async (req, res, next) => {
     }
 };
 const deleteTask = async (req, res, next) => {
-    const { id } = req.params;
+    const { id } = req.params; // 6a9de1d57c3a896797c7ce6d
 
     try {
         const deletedTask = await Task.findOneAndDelete({
