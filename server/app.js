@@ -10,10 +10,10 @@ const app = express();
 app.use(cors())
 app.use(helmet()); // security layer added for extra security protection form hackers. 
 app.use(express.json());
+app.use(cookieParser());
 app.use("/api/task/", taskRouter);
 app.use("/api/user/", userRouter);
 app.use(errorHandler)
-app.use(cookieParser())
 
 
 module.exports = app

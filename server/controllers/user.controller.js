@@ -72,36 +72,41 @@ const getAllUsers = async (req, res, next) => {
     }
 }
 
-const refreshAccessToken = async (req, res, next)=>{
+const refreshAccessToken = async (req, res, next) => {
     try {
-        
         const refreshToken = req.cookies.refreshToken;
-        if(!refreshToken){
+
+        if (!refreshToken) {
             return res.status(401).json({
-                message: "Refresh Token is missing. "
-            })
+                message: "Refresh token is missing"
+            });
         }
-        const decodedUser = jwt.verify(
-            refreshToken, 
+
+        const decoded = jwt.verify(
+            refreshToken,
             process.env.REFRESH_TOKEN_SECRET
-        )
+        );
 
         const accessToken = jwt.sign(
             {
-                userId: decodedUser.userId,
-
-            }, 
-            process.env.ACCESS_TOKEN_SECRET, 
+                userId: decoded.userId
+            },
+            process.env.ACCESS_TOKEN_SECRET,
             {
                 expiresIn: process.env.ACCESS_TOKEN_EXPIRY
             }
-        )
+        );
 
+        return res.status(200).json({
+            accessToken,
+            message: "Access token refreshed successfully"
+        });
 
     } catch (error) {
-        next(error)
+        console.log(error.message)
+        next(error);
     }
-}
+};
 
 const loginUser = async (req, res, next) => {
 
@@ -150,7 +155,7 @@ const loginUser = async (req, res, next) => {
             },
             process.env.REFRESH_TOKEN_SECRET,
             {
-                expiresIn: process.env.REFRESH_TOKEN_SECRET
+                expiresIn: process.env.REFRESH_TOKEN_EXPIRY
             }
         )
 
@@ -168,6 +173,7 @@ const loginUser = async (req, res, next) => {
         });
 
     } catch (error) {
+        console.log(error.message)
         next(error);
     }
 };
