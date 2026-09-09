@@ -72,6 +72,37 @@ const getAllUsers = async (req, res, next) => {
     }
 }
 
+const refreshAccessToken = async (req, res, next)=>{
+    try {
+        
+        const refreshToken = req.cookies.refreshToken;
+        if(!refreshToken){
+            return res.status(401).json({
+                message: "Refresh Token is missing. "
+            })
+        }
+        const decodedUser = jwt.verify(
+            refreshToken, 
+            process.env.REFRESH_TOKEN_SECRET
+        )
+
+        const accessToken = jwt.sign(
+            {
+                userId: decodedUser.userId,
+
+            }, 
+            process.env.ACCESS_TOKEN_SECRET, 
+            {
+                expiresIn: process.env.ACCESS_TOKEN_EXPIRY
+            }
+        )
+
+
+    } catch (error) {
+        next(error)
+    }
+}
+
 const loginUser = async (req, res, next) => {
 
     const { email, password } = req.body;
@@ -113,6 +144,23 @@ const loginUser = async (req, res, next) => {
             }
         )
 
+        const refreshToken = jwt.sign(
+            {
+                userId: user._id
+            },
+            process.env.REFRESH_TOKEN_SECRET,
+            {
+                expiresIn: process.env.REFRESH_TOKEN_SECRET
+            }
+        )
+
+        res.cookie("refreshToken", refreshToken, {
+            httpOnly: true,
+            secure: true,
+            sameSite: "lax",
+            maxAge: 10 * 24 * 60 * 60 * 1000
+        })
+
 
         return res.status(200).json({
             accessToken,
@@ -124,4 +172,4 @@ const loginUser = async (req, res, next) => {
     }
 };
 
-module.exports = { registerUser, getAllUsers, loginUser };
+module.exports = { registerUser, getAllUsers, loginUser, refreshAccessToken };

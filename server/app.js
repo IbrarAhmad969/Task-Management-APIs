@@ -4,6 +4,7 @@ const userRouter = require("../server/routes/user.route")
 const errorHandler = require("./middleware/error.middleware");
 const helmet = require("helmet")
 const cors = require("cors")
+const cookieParser = require("cookie-parser")
 
 const app = express();
 app.use(cors())
@@ -12,6 +13,7 @@ app.use(express.json());
 app.use("/api/task/", taskRouter);
 app.use("/api/user/", userRouter);
 app.use(errorHandler)
+app.use(cookieParser())
 
 
 module.exports = app
