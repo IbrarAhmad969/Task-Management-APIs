@@ -1,6 +1,7 @@
 const User = require("../models/user.model")
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken")
+const Session = require("../models/session.model")
 
 
 const registerUser = async (req, res, next) => {
@@ -159,9 +160,22 @@ const loginUser = async (req, res, next) => {
             }
         )
 
+        // apply session mgt. 
+
+        const tokenHash = await bcrypt.hash(refreshToken, 10);
+
+        await Session.create({
+            user: user._id,
+            tokenHash,
+            userAgent: req.get("User-Agent"),
+            expiresAt: new Date(
+                Date.now() + 10 * 24 * 60 * 60 * 1000
+            )
+        })
+
         res.cookie("refreshToken", refreshToken, {
             httpOnly: true,
-            secure: true,
+          //  secure: true,
             sameSite: "lax",
             maxAge: 10 * 24 * 60 * 60 * 1000
         })
