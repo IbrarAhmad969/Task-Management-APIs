@@ -73,6 +73,7 @@ const getAllUsers = async (req, res, next) => {
     }
 }
 
+
 const refreshAccessToken = async (req, res, next) => {
     try {
         const refreshToken = req.cookies.refreshToken;
@@ -83,11 +84,42 @@ const refreshAccessToken = async (req, res, next) => {
             });
         }
 
+        // 1. Verify the refresh JWT
         const decoded = jwt.verify(
             refreshToken,
             process.env.REFRESH_TOKEN_SECRET
         );
 
+        // 2. Find this user's active, unexpired sessions
+        const sessions = await Session.find({
+            user: decoded.userId,
+            revokedAt: null,
+            expiresAt: { $gt: new Date() }
+        });
+
+        // 3. Compare the presented token against stored hashes
+        let matchingSession = null;
+
+        for (const session of sessions) {
+            const isMatch = await bcrypt.compare(
+                refreshToken,
+                session.tokenHash
+            );
+
+            if (isMatch) {
+                matchingSession = session;
+                break;
+            }
+        }
+
+        // 4. Reject tokens without a valid session
+        if (!matchingSession) {
+            return res.status(401).json({
+                message: "Session is invalid, expired, or revoked"
+            });
+        }
+
+        // 5. Only now issue a new access token
         const accessToken = jwt.sign(
             {
                 userId: decoded.userId
@@ -104,7 +136,18 @@ const refreshAccessToken = async (req, res, next) => {
         });
 
     } catch (error) {
-        console.log(error.message)
+        // Invalid or expired refresh JWTs are authentication failures
+        if (
+            error.name === "JsonWebTokenError" ||
+            error.name === "TokenExpiredError" ||
+            error.name === "NotBeforeError"
+        ) {
+            return res.status(401).json({
+                message: "Refresh token is invalid or expired"
+            });
+        }
+
+        // Database and unexpected errors go to central error handling
         next(error);
     }
 };
@@ -175,7 +218,7 @@ const loginUser = async (req, res, next) => {
 
         res.cookie("refreshToken", refreshToken, {
             httpOnly: true,
-          //  secure: true,
+            //  secure: true,
             sameSite: "lax",
             maxAge: 10 * 24 * 60 * 60 * 1000
         })
