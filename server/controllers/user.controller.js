@@ -235,4 +235,83 @@ const loginUser = async (req, res, next) => {
     }
 };
 
-module.exports = { registerUser, getAllUsers, loginUser, refreshAccessToken };
+const logoutUser = async (req, res, next) => {
+    try {
+        const refreshToken = req.cookies?.refreshToken;
+
+        // Clear the browser cookie even if it is missing or invalid
+        if (!refreshToken) {
+            res.clearCookie("refreshToken", {
+                httpOnly: true,
+                secure: process.env.NODE_ENV === "production",
+                sameSite: "lax",
+                path: "/"
+            });
+
+            return res.status(200).json({
+                message: "Logged out successfully"
+            });
+        }
+
+        // Verify the refresh token
+        let decoded;
+
+        try {
+            decoded = jwt.verify(
+                refreshToken,
+                process.env.REFRESH_TOKEN_SECRET
+            );
+        } catch (error) {
+            // An invalid or expired token cannot identify a session.
+            // We can still clear the cookie.
+            res.clearCookie("refreshToken", {
+                httpOnly: true,
+                secure: process.env.NODE_ENV === "production",
+                sameSite: "lax",
+                path: "/"
+            });
+
+            return res.status(200).json({
+                message: "Logged out successfully"
+            });
+        }
+
+        // Find this user's sessions that have not been revoked
+        const sessions = await Session.find({
+            user: decoded.userId,
+            revokedAt: null
+        });
+
+        // Find the session whose hash matches this cookie's token
+        for (const session of sessions) {
+            const isMatch = await bcrypt.compare(
+                refreshToken,
+                session.tokenHash
+            );
+
+            if (isMatch) {
+                session.revokedAt = new Date();
+                await session.save();
+                break;
+            }
+        }
+
+        // Remove the refresh-token cookie from the browser
+        res.clearCookie("refreshToken", {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production",
+            sameSite: "lax",
+            path: "/"
+        });
+
+        return res.status(200).json({
+            message: "Logged out successfully"
+        });
+
+    } catch (error) {
+        next(error);
+    }
+};
+
+
+module.exports = { registerUser, getAllUsers, loginUser, refreshAccessToken, logoutUser };

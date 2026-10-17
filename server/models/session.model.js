@@ -15,7 +15,7 @@ const sessionSchema = new mongoose.Schema(
         userAgent: {
             type: String
         },
-        expireAt: {
+        expiresAt: {
             type: Date,
             required: true,
         },
