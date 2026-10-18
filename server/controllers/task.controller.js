@@ -185,4 +185,29 @@ const deleteTask = async (req, res, next) => {
     }
 };
 
-module.exports = { createTask, getTasks, findTask, updateTask, deleteTask }
+const getTasksStats = async (req, res, next) => {
+    try {
+        const stats = await Task.aggregate([
+            {
+                $match: {
+                    user: req.user._id
+                }
+            },
+            {
+                $group: {
+                    _id: "$status",
+                    count: { $sum: 1 }
+                }
+            }
+        ]);
+
+        return res.status(200).json({
+            stats
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
+
+module.exports = { createTask, getTasks, findTask, updateTask, deleteTask, getTasksStats }
