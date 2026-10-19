@@ -25,6 +25,24 @@ const taskSchema = new mongoose.Schema(
         dueDate: {
             type: Date
         }, 
+        // the multer file 
+        attachment: {
+            originalName: {
+                type: String
+            }, 
+            fileName: {
+                type: String
+            }, 
+            path: {
+                type: String
+            }, 
+            mimetype: {
+                type: String
+            }, 
+            size: {
+                type: Number
+            }
+        },
         user: {
             type: mongoose.Schema.Types.ObjectId,
             ref: "User",

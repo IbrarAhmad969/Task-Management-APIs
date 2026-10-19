@@ -209,5 +209,45 @@ const getTasksStats = async (req, res, next) => {
     }
 };
 
+const uploadTaskAttachment = async (req, res, next) => {
+    try {
+
+        const task = await Task.findOne({
+            _id: req.params.id,
+            user: req.user
+        });
+
+        if (!task) {
+            return res.status(400).json({
+                message: "Task not found !"
+            })
+        }
+        if (!req.file) {
+            return res.status(400).json({
+                message: "file not found !"
+            })
+        }
+
+        task.attachment = {
+            originalName: req.file.originalName,
+            filename: req.file.filename,
+            path: req.file.path,
+            mimetype: req.file.mimetype,
+            size: req.file.size
+        }
+
+
+        await task.save();
+
+        return res.status(200).json({
+            message: "Attachment uploaded successfully",
+            task
+        });
+
+    } catch (error) {
+        next(error)
+    }
+}
+
 
 module.exports = { createTask, getTasks, findTask, updateTask, deleteTask, getTasksStats }
