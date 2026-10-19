@@ -224,19 +224,17 @@ const uploadTaskAttachment = async (req, res, next) => {
         }
         if (!req.file) {
             return res.status(400).json({
-                message: "file not found !"
+                message: "Please upload a file !"
             })
         }
 
         task.attachment = {
-            originalName: req.file.originalName,
-            filename: req.file.filename,
+            originalName: req.file.originalname,
+            fileName: req.file.filename,
             path: req.file.path,
             mimetype: req.file.mimetype,
             size: req.file.size
         }
-
-
         await task.save();
 
         return res.status(200).json({
@@ -245,9 +243,10 @@ const uploadTaskAttachment = async (req, res, next) => {
         });
 
     } catch (error) {
+        console.log("The server error  we get -> ", error)
         next(error)
     }
 }
 
 
-module.exports = { createTask, getTasks, findTask, updateTask, deleteTask, getTasksStats }
+module.exports = { createTask, getTasks, findTask, updateTask, deleteTask, getTasksStats, uploadTaskAttachment }
