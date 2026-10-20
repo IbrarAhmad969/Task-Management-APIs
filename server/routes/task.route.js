@@ -1,7 +1,8 @@
 const express = require("express")
 const router = express.Router();
 const { authMiddleware } = require("../middleware/auth.middleware")
-const { createTask, getTasks, findTask, updateTask, deleteTask, getTasksStats, uploadTaskAttachment } = require("../controllers/task.controller")
+const { createTask, getTasks, findTask, updateTask, deleteTask, getTasksStats, uploadTaskAttachment, downloadTaskAttachment
+} = require("../controllers/task.controller")
 
 const { validate } = require("../middleware/requestsValidation.middleware")
 
@@ -26,5 +27,9 @@ router.post(
     upload.single("file"),
     uploadTaskAttachment
 );
-
+router.get(
+    "/:id/attachment",
+    authMiddleware,
+    downloadTaskAttachment
+);
 module.exports = router;

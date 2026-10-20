@@ -1,4 +1,6 @@
 const Task = require("../models/tasks.model")
+const path = require("path");
+const fs = require("fs");
 
 const createTask = async (req, res, next) => {
 
@@ -248,5 +250,57 @@ const uploadTaskAttachment = async (req, res, next) => {
     }
 }
 
+const downloadTaskAttachment = async (req, res, next) => {
+    try {
+        // 1. Find a task belonging to the logged-in user
+        const task = await Task.findOne({
+            _id: req.params.id,
+            user: req.user
+        });
 
-module.exports = { createTask, getTasks, findTask, updateTask, deleteTask, getTasksStats, uploadTaskAttachment }
+        if (!task) {
+            return res.status(404).json({
+                message: "Task not found"
+            });
+        }
+
+        // 2. Check whether the task has an attachment
+        if (!task.attachment || !task.attachment.fileName) {
+            return res.status(404).json({
+                message: "No attachment found for this task"
+            });
+        }
+
+        // 3. Build a safe path inside our upload folder
+        const safeFileName = path.basename(
+            task.attachment.fileName
+        );
+
+        const filePath = path.join(
+            __dirname,
+            "..",
+            "upload",
+            safeFileName
+        );
+
+        // 4. Confirm that the file exists on disk
+        if (!fs.existsSync(filePath)) {
+            return res.status(404).json({
+                message: "Attachment file not found on server"
+            });
+        }
+
+        // 5. Send the file as a download
+        return res.download(
+            filePath,
+            task.attachment.originalName || safeFileName
+        );
+
+    } catch (error) {
+        next(error);
+    }
+};
+
+
+
+module.exports = { createTask, getTasks, findTask, updateTask, deleteTask, getTasksStats, uploadTaskAttachment, downloadTaskAttachment }
