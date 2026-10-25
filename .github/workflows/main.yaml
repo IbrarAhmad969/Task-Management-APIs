@@ -50,39 +50,51 @@ jobs:
           REFRESH_TOKEN_EXPIRY: ${{ vars.REFRESH_TOKEN_EXPIRY }}
 
 
+  deploy:
+    name: Deploy to EC2
+    needs: test
+    runs-on: ubuntu-latest
 
-deploy:
-  name: Deploy to EC2
-  needs: test
-  runs-on: ubuntu-latest
+    steps:
+      - name: Deploy over SSH
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
 
-  steps:
-    - name: Deploy over SSH
-      uses: appleboy/ssh-action@v1
-      with:
-        host: ${{ secrets.EC2_HOST }}
-        username: ${{ secrets.EC2_USER }}
-        key: ${{ secrets.EC2_SSH_KEY }}
-        script: |
-          cd ~/Task-Management-APIs
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-          # Pull latest code
-          git pull
+      - name: Set up Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
 
-          # Install dependencies on EC2
-          npm install
+      - name: Change directory
+        run: cd Task-Management-APIs
 
-          # Create the .env file on EC2
+      - name: Install dependencies
+        run: npm install
+      - name: Create .env file
+        run: |
           {
-            printf 'PORT=%s\n' '${{ vars.PORT }}'
-            printf 'MONGO_URI=%s\n' '${{ secrets.MONGO_URI }}'
-            printf 'ACCESS_TOKEN_SECRET=%s\n' '${{ secrets.ACCESS_TOKEN_SECRET }}'
-            printf 'ACCESS_TOKEN_EXPIRY=%s\n' '${{ vars.ACCESS_TOKEN_EXPIRY }}'
-            printf 'REFRESH_TOKEN_SECRET=%s\n' '${{ secrets.REFRESH_TOKEN_SECRET }}'
-            printf 'REFRESH_TOKEN_EXPIRY=%s\n' '${{ vars.REFRESH_TOKEN_EXPIRY }}'
+            printf 'PORT=%s\n' "$PORT"
+            printf 'MONGO_URI=%s\n' "$MONGO_URI"
+            printf 'ACCESS_TOKEN_SECRET=%s\n' "$ACCESS_TOKEN_SECRET"
+            printf 'ACCESS_TOKEN_EXPIRY=%s\n' "$ACCESS_TOKEN_EXPIRY"
+            printf 'REFRESH_TOKEN_SECRET=%s\n' "$REFRESH_TOKEN_SECRET"
+            printf 'REFRESH_TOKEN_EXPIRY=%s\n' "$REFRESH_TOKEN_EXPIRY"
           } > .env
-
           chmod 600 .env
-
-          # Restart the application
-          npm start
+        env:
+          PORT: ${{ vars.PORT }}
+          MONGO_URI: ${{ vars.MONGO_URI }}
+          ACCESS_TOKEN_SECRET: ${{ vars.ACCESS_TOKEN_SECRET }}
+          ACCESS_TOKEN_EXPIRY: ${{ vars.ACCESS_TOKEN_EXPIRY }}
+          REFRESH_TOKEN_SECRET: ${{ vars.REFRESH_TOKEN_SECRET }}
+          REFRESH_TOKEN_EXPIRY: ${{ vars.REFRESH_TOKEN_EXPIRY }}
+      
+      - name: Code Run
+        run: npm start
