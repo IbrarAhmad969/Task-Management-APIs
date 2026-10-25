@@ -30,5 +30,72 @@ jobs:
       - name: Install dependencies
         run: npm install
 
+      - name: Create .env file
+        run: |
+          {
+            printf 'PORT=%s\n' "$PORT"
+            printf 'MONGODB_URI=%s\n' "$MONGODB_URI"
+            printf 'ACCESS_TOKEN_SECRET=%s\n' "$ACCESS_TOKEN_SECRET"
+            printf 'ACCESS_TOKEN_EXPIRY=%s\n' "$ACCESS_TOKEN_EXPIRY"
+            printf 'REFRESH_TOKEN_SECRET=%s\n' "$REFRESH_TOKEN_SECRET"
+            printf 'REFRESH_TOKEN_EXPIRY=%s\n' "$REFRESH_TOKEN_EXPIRY"
+          } > .env
+          chmod 600 .env
+        env:
+          PORT: ${{ vars.PORT }}
+          MONGODB_URI: ${{ vars.MONGODB_URI }}
+          ACCESS_TOKEN_SECRET: ${{ vars.ACCESS_TOKEN_SECRET }}
+          ACCESS_TOKEN_EXPIRY: ${{ vars.ACCESS_TOKEN_EXPIRY }}
+          REFRESH_TOKEN_SECRET: ${{ vars.REFRESH_TOKEN_SECRET }}
+          REFRESH_TOKEN_EXPIRY: ${{ vars.REFRESH_TOKEN_EXPIRY }}
+
       - name: Run Code
+        run: npm start
+  deploy:
+    name: Deploy to EC2
+    needs: test
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Deploy over SSH
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          
+      - name: Change directory
+        run: cd Task-Management-APIs
+
+      - name: Install dependencies
+        run: npm install
+      - name: Create .env file
+        run: |
+          {
+            printf 'PORT=%s\n' "$PORT"
+            printf 'MONGODB_URI=%s\n' "$MONGODB_URI"
+            printf 'ACCESS_TOKEN_SECRET=%s\n' "$ACCESS_TOKEN_SECRET"
+            printf 'ACCESS_TOKEN_EXPIRY=%s\n' "$ACCESS_TOKEN_EXPIRY"
+            printf 'REFRESH_TOKEN_SECRET=%s\n' "$REFRESH_TOKEN_SECRET"
+            printf 'REFRESH_TOKEN_EXPIRY=%s\n' "$REFRESH_TOKEN_EXPIRY"
+          } > .env
+          chmod 600 .env
+        env:
+          PORT: ${{ vars.PORT }}
+          MONGODB_URI: ${{ vars.MONGODB_URI }}
+          ACCESS_TOKEN_SECRET: ${{ vars.ACCESS_TOKEN_SECRET }}
+          ACCESS_TOKEN_EXPIRY: ${{ vars.ACCESS_TOKEN_EXPIRY }}
+          REFRESH_TOKEN_SECRET: ${{ vars.REFRESH_TOKEN_SECRET }}
+          REFRESH_TOKEN_EXPIRY: ${{ vars.REFRESH_TOKEN_EXPIRY }}
+      
+      - name: Code Run
         run: npm start
