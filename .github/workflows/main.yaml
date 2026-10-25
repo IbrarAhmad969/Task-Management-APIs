@@ -49,8 +49,7 @@ jobs:
           REFRESH_TOKEN_SECRET: ${{ vars.REFRESH_TOKEN_SECRET }}
           REFRESH_TOKEN_EXPIRY: ${{ vars.REFRESH_TOKEN_EXPIRY }}
 
-      - name: Run Code
-        run: npm start
+
   deploy:
     name: Deploy to EC2
     needs: test
