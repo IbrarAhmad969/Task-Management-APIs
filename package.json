@@ -4,8 +4,9 @@
   "description": "This project is for learning purpose",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon index.js",
+    "start": "nodemon index.js", 
     "test": "jest"
+    
   },
   "author": "Ibrar",
   "license": "ISC",
