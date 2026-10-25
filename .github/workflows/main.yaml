@@ -34,7 +34,7 @@ jobs:
         run: |
           {
             printf 'PORT=%s\n' "$PORT"
-            printf 'MONGODB_URI=%s\n' "$MONGODB_URI"
+            printf 'MONGO_URI=%s\n' "$MONGO_URI"
             printf 'ACCESS_TOKEN_SECRET=%s\n' "$ACCESS_TOKEN_SECRET"
             printf 'ACCESS_TOKEN_EXPIRY=%s\n' "$ACCESS_TOKEN_EXPIRY"
             printf 'REFRESH_TOKEN_SECRET=%s\n' "$REFRESH_TOKEN_SECRET"
@@ -43,7 +43,7 @@ jobs:
           chmod 600 .env
         env:
           PORT: ${{ vars.PORT }}
-          MONGODB_URI: ${{ vars.MONGODB_URI }}
+          MONGO_URI: ${{ vars.MONGO_URI }}
           ACCESS_TOKEN_SECRET: ${{ vars.ACCESS_TOKEN_SECRET }}
           ACCESS_TOKEN_EXPIRY: ${{ vars.ACCESS_TOKEN_EXPIRY }}
           REFRESH_TOKEN_SECRET: ${{ vars.REFRESH_TOKEN_SECRET }}
@@ -72,7 +72,7 @@ jobs:
         with:
           node-version: 22
           cache: npm
-          
+
       - name: Change directory
         run: cd Task-Management-APIs
 
@@ -82,7 +82,7 @@ jobs:
         run: |
           {
             printf 'PORT=%s\n' "$PORT"
-            printf 'MONGODB_URI=%s\n' "$MONGODB_URI"
+            printf 'MONGO_URI=%s\n' "$MONGO_URI"
             printf 'ACCESS_TOKEN_SECRET=%s\n' "$ACCESS_TOKEN_SECRET"
             printf 'ACCESS_TOKEN_EXPIRY=%s\n' "$ACCESS_TOKEN_EXPIRY"
             printf 'REFRESH_TOKEN_SECRET=%s\n' "$REFRESH_TOKEN_SECRET"
@@ -91,7 +91,7 @@ jobs:
           chmod 600 .env
         env:
           PORT: ${{ vars.PORT }}
-          MONGODB_URI: ${{ vars.MONGODB_URI }}
+          MONGO_URI: ${{ vars.MONGO_URI }}
           ACCESS_TOKEN_SECRET: ${{ vars.ACCESS_TOKEN_SECRET }}
           ACCESS_TOKEN_EXPIRY: ${{ vars.ACCESS_TOKEN_EXPIRY }}
           REFRESH_TOKEN_SECRET: ${{ vars.REFRESH_TOKEN_SECRET }}
