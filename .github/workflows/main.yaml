@@ -72,5 +72,17 @@ deploy:
           # Install dependencies on EC2
           npm install
 
+          # Create the .env file on EC2
+          {
+            printf 'PORT=%s\n' '${{ vars.PORT }}'
+            printf 'MONGO_URI=%s\n' '${{ secrets.MONGO_URI }}'
+            printf 'ACCESS_TOKEN_SECRET=%s\n' '${{ secrets.ACCESS_TOKEN_SECRET }}'
+            printf 'ACCESS_TOKEN_EXPIRY=%s\n' '${{ vars.ACCESS_TOKEN_EXPIRY }}'
+            printf 'REFRESH_TOKEN_SECRET=%s\n' '${{ secrets.REFRESH_TOKEN_SECRET }}'
+            printf 'REFRESH_TOKEN_EXPIRY=%s\n' '${{ vars.REFRESH_TOKEN_EXPIRY }}'
+          } > .env
+
+          chmod 600 .env
+
           # Restart the application
           npm start
