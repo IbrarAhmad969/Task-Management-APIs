@@ -6,7 +6,7 @@ const startServer = async () => {
     await connectDB()
 
     app.listen(process.env.PORT || 3000, (req, res) => {
-        console.log("Server is listening at PORT 8000")
+        console.log("Server is listening at the PORT 8000")
     })
 }
 
