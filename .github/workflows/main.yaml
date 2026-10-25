@@ -47,5 +47,4 @@ jobs:
             cd ~/Task-Management-APIs
             git pull origin main
             npm install
-            npm start
 
