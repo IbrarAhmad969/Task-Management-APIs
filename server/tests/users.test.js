@@ -66,5 +66,16 @@ describe("GET /api/user/users", () => {
 
     });
 
+    test("Should return 404 when no users are found", async () => {
+
+        await User.deleteMany({});
+
+        const response = await request(app)
+            .get("/api/user/users");
+
+        expect(response.statusCode).toBe(404);
+        expect(response.body.message).toBe("No Users are found!");
+
+    });
 
 })
